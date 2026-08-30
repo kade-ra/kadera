@@ -38,37 +38,47 @@ function switchTab(category) {
 // 브랜드 소개 렌더링 (포인트가 들어간 모던 블랙 디자인)
 function renderBrandIntro() {
   document.getElementById("results").innerHTML = `
-      <!-- 상단 히어로 박스 (블랙 배경 + 흰색 텍스트 포인트) -->
+      <!-- 상단 히어로 박스 -->
       <div style="text-align: center; padding: 48px 24px; background: #111; color: #fff; border: 1px solid #111; border-radius: 0px; margin-bottom: 24px;">
         <span style="font-size: 0.8em; letter-spacing: 2px; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 12px;">ABOUT US</span>
-        <h2 style="margin: 0 0 16px 0; color: #fff; font-weight: bold; font-size: 1.6em; word-break: keep-all;">진짜 이야기의 시작, 카더라</h2>
-        <p style="margin: 0; color: #ccc; line-height: 1.7; font-size: 0.9em; word-break: keep-all;">
-          카더라는 현장의 생생한 인터뷰와 업계 이야기를 모아<br>
-          더 깊은 인사이트를 공유하는 공간입니다.
+
+        <h2 style="margin: 0 0 20px 0; color: #fff; font-weight: bold; font-size: 1.6em; word-break: keep-all;">
+          사람의 이야기를 듣습니다, 카더라
+        </h2>
+
+        <p style="margin: 0; color: #ccc; line-height: 1.9; font-size: 0.9em; word-break: keep-all;">
+          카더라는 다양한 분야에서 자신만의 길을 만들어가는 사람들의 이야기를<br>
+          인터뷰로 담아내는 콘텐츠 채널입니다.
+          <br><br>
+          누군가는 어떻게 시작했는지,<br>
+          어떤 생각으로 자신의 일을 만들어가는지,<br>
+          그리고 우리가 쉽게 알 수 없었던 그들의 이야기는 무엇인지.
+          <br><br>
+          카더라는 직접 묻고, 듣고, 기록합니다.
         </p>
       </div>
 
-      <!-- 4개 포인트 Grid (각진 카드 + 번호 뱃지 + 이모지) -->
+      <!-- 4개 포인트 Grid -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
-        
+
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
           <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">생생한 목소리</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">현업 전문가들의 솔직한 인터뷰</span>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">직접 듣는 솔직하고 생생한 이야기</span>
         </div>
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
-          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">지식 공유</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">가공되지 않은 유용한 정보</span>
+          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">새로운 시선</strong>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">한 사람의 경험에서 발견하는 새로운 관점</span>
         </div>
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
-          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">신뢰와 투명성</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">사실 기반의 검증된 인사이트</span>
+          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">깊이 있는 콘텐츠</strong>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">활동을 넘어 그 과정과 생각까지 담아냅니다</span>
         </div>
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
-          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">커뮤니티</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">댓글을 통한 활발한 소통</span>
+          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">함께하는 이야기</strong>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">인터뷰를 통해 서로의 생각을 나눕니다</span>
         </div>
 
       </div>

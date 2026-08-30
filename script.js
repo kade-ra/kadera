@@ -58,31 +58,30 @@ function renderBrandIntro() {
         </p>
       </div>
 
-      <!-- 4개 포인트 Grid -->
+            <!-- 4개 포인트 Grid -->
       <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin-bottom: 32px;">
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
-          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">생생한 목소리</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">직접 듣는 솔직하고 생생한 이야기</span>
+          <strong style="display: block; margin-bottom: 8px; color: #111; font-size: 1em; text-align: center;">왜 시작했을까</strong>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.5;">누군가의 시작에는 어떤 계기가 있었을까</span>
         </div>
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
-          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">새로운 시선</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">한 사람의 경험에서 발견하는 새로운 관점</span>
+          <strong style="display: block; margin-bottom: 8px; color: #111; font-size: 1em; text-align: center;">어떻게 만들어갈까</strong>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.5;">자신만의 길을 만들어가는 과정은 어떨까</span>
         </div>
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
-          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">깊이 있는 콘텐츠</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">활동을 넘어 그 과정과 생각까지 담아냅니다</span>
+          <strong style="display: block; margin-bottom: 8px; color: #111; font-size: 1em; text-align: center;">무슨 생각을 할까</strong>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.5;">그 일을 계속해가는 이유와 생각은 무엇일까</span>
         </div>
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
-          <strong style="display: block; margin-bottom: 6px; color: #111; font-size: 1em; text-align: center;">함께하는 이야기</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.4;">인터뷰를 통해 서로의 생각을 나눕니다</span>
+          <strong style="display: block; margin-bottom: 8px; color: #111; font-size: 1em; text-align: center;">어떤 이야기가 있을까</strong>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.5;">우리가 알지 못했던 이야기를 직접 들어봅니다</span>
         </div>
 
       </div>
-    </div>
   `;
 }
 

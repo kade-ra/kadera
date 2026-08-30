@@ -336,38 +336,3 @@ textarea {
   font-family: inherit;
 }
 
-/* 인터뷰 번호 (#001 등) */
-.interview-num {
-  font-size: 0.85rem;
-  font-weight: bold;
-  color: #ff4757;
-  display: block;
-  margin-bottom: 4px;
-}
-
-/* 한 줄 소개 */
-.interview-summary {
-  font-size: 0.95rem;
-  color: #666;
-  margin: 6px 0 12px 0;
-  line-height: 1.4;
-}
-
-/* 공유 버튼 */
-.share-box {
-  margin-top: 10px;
-}
-
-.btn-share {
-  background-color: #f1f2f6;
-  border: none;
-  border-radius: 6px;
-  padding: 6px 12px;
-  font-size: 0.85rem;
-  cursor: pointer;
-  transition: background-color 0.2s;
-}
-
-.btn-share:hover {
-  background-color: #e4e7eb;
-}

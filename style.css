@@ -662,3 +662,164 @@ textarea {
 .comment-input-box .btn-submit:hover {
   background: #333;
 }
+
+/* ==========================================
+   각진 모서리 & 미니멀 모노톤 스타일
+   ========================================== */
+
+/* 카드 전체 세부 설정 */
+.card {
+  border: none !important;
+  border-bottom: 1px solid #e0e0e0 !important;
+  padding: 16px 0 !important;
+  border-radius: 0 !important; /* 완전 각진 모서리 */
+}
+
+/* 제목 부분: 두께를 줄이고 깔끔하게 */
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.card-header::-webkit-details-marker {
+  display: none;
+}
+
+.card-title {
+  font-size: 1rem !important;
+  font-weight: 500 !important; /* 굵기 빼고 얇고 깔끔하게 */
+  color: #222 !important;
+}
+
+.card-date {
+  font-size: 0.8rem !important;
+  color: #888 !important;
+  font-weight: 400 !important;
+}
+
+.card-body {
+  padding-top: 12px;
+  margin-top: 10px;
+  border-top: 1px dotted #ccc !important;
+}
+
+.card-content {
+  font-size: 0.9rem !important;
+  color: #333 !important;
+  line-height: 1.5;
+  margin-bottom: 16px;
+}
+
+/* 액션 버튼들: Thin 회색 테두리 + 완전 직각 */
+.card-actions {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.action-btn {
+  background: #fff !important;
+  border: 1px solid #111 !important;
+  border-radius: 0 !important; /* 완전 각진 형태 */
+  padding: 5px 10px !important;
+  font-size: 0.8rem !important;
+  font-weight: 400 !important;
+  color: #111 !important;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.action-btn:hover {
+  background: #f5f5f5 !important;
+}
+
+.action-btn.danger {
+  border-color: #ff4d4f !important;
+  color: #ff4d4f !important;
+}
+
+/* 댓글 영역 박스: 각진 1px 얇은 테두리 */
+.comments-section {
+  margin-top: 12px !important;
+  padding: 16px !important;
+  border: 1px solid #111 !important; /* 얇은 테두리 */
+  border-radius: 0 !important; /* 완전 직각 */
+  background: #fff !important;
+}
+
+.comment-count-title {
+  font-size: 0.85rem !important;
+  font-weight: 600 !important;
+  color: #222 !important;
+  margin-bottom: 10px;
+  display: block;
+}
+
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+}
+
+.comment-content {
+  font-size: 0.85rem !important;
+  color: #333 !important;
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comment-date {
+  font-size: 0.75rem !important;
+  color: #999 !important;
+}
+
+.empty-comment {
+  font-size: 0.82rem !important;
+  color: #888 !important;
+  padding: 6px 0;
+}
+
+/* 댓글 입력 박스: 완전 각진 미니멀 형태 */
+.comment-input-box {
+  display: flex !important;
+  margin-top: 12px !important;
+}
+
+.comment-input-box input {
+  flex: 1;
+  padding: 8px 10px !important;
+  border: 1px solid #111 !important;
+  border-right: none !important;
+  border-radius: 0 !important; /* 직각 */
+  font-size: 0.82rem !important;
+  outline: none;
+  background: #fff !important;
+  color: #111 !important;
+}
+
+.comment-input-box .btn-submit {
+  padding: 8px 16px !important;
+  background: #000 !important;
+  color: #fff !important;
+  border: 1px solid #000 !important;
+  border-radius: 0 !important; /* 직각 */
+  font-size: 0.82rem !important;
+  font-weight: 500 !important;
+  cursor: pointer;
+}

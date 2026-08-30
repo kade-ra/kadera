@@ -394,7 +394,7 @@ async function searchInterviews() {
       return `
         <details class="card">
           <summary class="card-header">
-            <strong class="card-title">${item.title || '제목 없음'}</strong>
+            <span class="card-title">${item.title || '제목 없음'}</span>
             <span class="card-date">${formatDate(item.created_at)}</span>
           </summary>
           
@@ -407,13 +407,13 @@ async function searchInterviews() {
                 <span>${item.likes || 0}</span>
               </button>
               <button id="comment-btn-${item.id}" class="action-btn" onclick="toggleComments(${item.id})">
-                💬 댓글 ${commentList.length}
+                💬 댓글 접기
               </button>
-              ${isAdmin ? `<button class="action-btn danger" onclick="deleteInterview(${item.id})">🗑️ 삭제</button>` : ''}
+              ${isAdmin ? `<button class="action-btn danger" onclick="deleteInterview(${item.id})">삭제</button>` : ''}
             </div>
 
-            <div id="comments-box-${item.id}" class="comments-section" style="display: none;">
-              <strong class="comment-count-title">댓글 (${commentList.length})</strong>
+            <div id="comments-box-${item.id}" class="comments-section">
+              <span class="comment-count-title">댓글 (${commentList.length})</span>
               <div class="comments-list">${commentsHtml}</div>
               <div class="comment-input-box">
                 <input type="text" id="comment-input-${item.id}" placeholder="댓글을 입력하세요...">
@@ -430,6 +430,7 @@ async function searchInterviews() {
     resultsDiv.innerHTML = `<p style='color:red;'>오류 발생: ${err.message}</p>`;
   }
 }
+
 
 // DOM 로드 완료 후 초기화
 document.addEventListener("DOMContentLoaded", () => {

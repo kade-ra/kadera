@@ -73,7 +73,7 @@ function renderBrandIntro() {
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">
           <strong style="display: block; margin-bottom: 8px; color: #111; font-size: 1em; text-align: center;">무슨 생각을 할까</strong>
-          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.5;">그 일을 계속하는 이유와 생각은 무엇일까</span>
+          <span style="font-size: 0.82em; color: #666; display: block; text-align: center; line-height: 1.5;">그 일을 계속하는 이유는 무엇일까</span>
         </div>
 
         <div style="border: 1px solid #111; padding: 24px 20px; border-radius: 0px; background: #fff; position: relative; box-sizing: border-box;">

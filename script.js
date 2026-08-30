@@ -277,12 +277,8 @@ async function searchInterviews() {
     commentList.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     const isLiked = likedList.includes(item.id);
 
-    // 1. 인터뷰 번호 자동 생성 (#001, #002...)
     const numStr = String(totalCount - index).padStart(3, '0');
     const interviewNum = item.interview_num || `KADERA INTERVIEW #${numStr}`;
-
-    // 2. 한 줄 소개 (없을 때 기본값)
-    const summaryText = item.summary || '한 줄 소개가 아직 없습니다.';
 
     const commentsHtml = commentList.length > 0 
       ? commentList.map(c => `
@@ -293,45 +289,54 @@ async function searchInterviews() {
         `).join('')
       : '<p style="color:#888; font-size:0.9em; padding: 12px 0;">첫 댓글을 남겨보세요.</p>';
 
+    // 👇 [여기서부터 적용된 코드가 들어갑니다]
+    const summaryHtml = item.summary ? `<p style="font-size: 0.88em; color: #666; margin: 4px 0 0 0; font-weight: normal;">${item.summary}</p>` : '';
+
     return `
-      <details class="card" style="border: none; border-bottom: 2px solid #111; padding-bottom: 16px; margin-bottom: 20px;">
-        <summary style="display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; padding: 8px 0;">
-          <span style="font-size: 0.75em; font-weight: bold; color: #888; letter-spacing: 1px; margin-bottom: 4px;">${interviewNum}</span>
-          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
-            <span style="font-weight: bold; font-size: 1.1em; color: #111;">${item.title || '제목 없음'}</span>
-            <span class="card-date" style="font-weight: normal; color: #666; font-size: 0.85em;">${formatDate(item.created_at)}</span>
+      <details class="card" style="border: none; border-bottom: 1px solid #e1e1e1; padding: 16px 0; margin-bottom: 0;">
+        <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; outline: none;">
+          
+          <!-- 왼쪽: 번호, 제목, 한 줄 소개 -->
+          <div style="flex: 1; padding-right: 16px;">
+            <span style="font-size: 0.75em; font-weight: bold; color: #888; letter-spacing: 1px; display: block; margin-bottom: 2px;">${interviewNum}</span>
+            <strong style="font-size: 1.05em; color: #111; display: block; word-break: keep-all;">${item.title || '제목 없음'}</strong>
+            ${summaryHtml}
           </div>
-          <p style="font-size: 0.88em; color: #555; margin: 6px 0 0 0; font-weight: normal;">${summaryText}</p>
+
+          <!-- 오른쪽: 날짜 및 접기/펼치기 화살표 아이콘 -->
+          <div style="display: flex; align-items: center; gap: 12px; flex-shrink: 0;">
+            <span class="card-date" style="color: #888; font-size: 0.82em;">${formatDate(item.created_at)}</span>
+            <span class="arrow-icon" style="font-size: 0.8em; color: #888; transition: transform 0.2s;">▼</span>
+          </div>
+
         </summary>
         
-        <div class="card-body" style="padding-top: 12px;">
-          <p class="card-content" style="font-size: 0.95em; color: #222; margin-bottom: 20px; line-height: 1.6;">${item.content || ''}</p>
+        <!-- 카드 본문 내용 -->
+        <div class="card-body" style="padding-top: 16px; margin-top: 12px; border-top: 1px dashed #eee;">
+          <p class="card-content" style="font-size: 0.95em; color: #222; margin-bottom: 20px; line-height: 1.6; white-space: pre-line;">${item.content || ''}</p>
 
+          <!-- 버튼 영역 -->
           <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-            <button onclick="likeInterview(${item.id}, this)" style="background: #fff; border: 1px solid #111; padding: 8px 16px; border-radius: 0px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85em; font-weight: bold; color: #111;">
+            <button onclick="likeInterview(${item.id}, this)" style="background: #fff; border: 1px solid #111; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.82em; font-weight: bold; color: #111;">
               <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span> 
               <span class="like-count">${item.likes || 0}</span>
             </button>
-            <button id="comment-btn-${item.id}" onclick="toggleComments(${item.id})" style="background: #fff; border: 1px solid #111; padding: 8px 16px; border-radius: 0px; cursor: pointer; color: #111; font-size: 0.85em; font-weight: bold;">
+            <button id="comment-btn-${item.id}" onclick="toggleComments(${item.id})" style="background: #fff; border: 1px solid #111; padding: 6px 12px; cursor: pointer; color: #111; font-size: 0.82em; font-weight: bold;">
               💬 댓글 보기
             </button>
-            <!-- 3. 공유 기능 버튼 추가 -->
-            <button onclick="copyLink()" style="background: #fff; border: 1px solid #111; padding: 8px 16px; border-radius: 0px; cursor: pointer; color: #111; font-size: 0.85em; font-weight: bold;">
+            <button onclick="copyLink()" style="background: #fff; border: 1px solid #111; padding: 6px 12px; cursor: pointer; color: #111; font-size: 0.82em; font-weight: bold;">
               🔗 공유하기
             </button>
           </div>
 
-          <div id="comments-box-${item.id}" class="comments-section" style="display: none; background: #fff; padding: 16px; border-radius: 0px; border: 1px solid #111;">
-            <strong class="comment-count-text" style="font-size: 0.9em; color: #111; font-weight: bold; display: block; margin-bottom: 8px;">댓글 (${commentList.length})</strong>
-            
-            <div class="comments-list">
-              ${commentsHtml}
-            </div>
-            
-            <div style="margin-top: 16px;">
-              <div class="comment-input-box" style="display: flex; gap: 0px;">
-                <input type="text" id="comment-input-${item.id}" placeholder="댓글을 입력하세요..." style="flex: 1; padding: 10px 12px; border: 1px solid #111; border-right: none; border-radius: 0px; font-size: 0.85em; outline: none; background: #fff;">
-                <button onclick="addComment(${item.id})" style="padding: 10px 20px; background: #111; color: #fff; border: 1px solid #111; border-radius: 0px; font-size: 0.85em; font-weight: bold; cursor: pointer;">작성</button>
+          <!-- 댓글 박스 -->
+          <div id="comments-box-${item.id}" class="comments-section" style="display: none; background: #fafafa; padding: 16px; border: 1px solid #111;">
+            <strong class="comment-count-text" style="font-size: 0.88em; color: #111; display: block; margin-bottom: 8px;">댓글 (${commentList.length})</strong>
+            <div class="comments-list">${commentsHtml}</div>
+            <div style="margin-top: 12px;">
+              <div class="comment-input-box" style="display: flex;">
+                <input type="text" id="comment-input-${item.id}" placeholder="댓글을 입력하세요..." style="flex: 1; padding: 8px 10px; border: 1px solid #111; border-right: none; font-size: 0.82em; outline: none; background: #fff;">
+                <button onclick="addComment(${item.id})" style="padding: 8px 16px; background: #111; color: #fff; border: 1px solid #111; font-size: 0.82em; font-weight: bold; cursor: pointer;">작성</button>
               </div>
             </div>
           </div>

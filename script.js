@@ -340,7 +340,7 @@ async function deleteInterview(id) {
   }
 }
 
-// 게시글 및 댓글 조회 (원본 전체 기능 포함)
+// 게시글 및 댓글 조회 (디자인 및 스크립트 최적화)
 async function searchInterviews() {
   const searchInput = document.getElementById("searchInput");
   const query = searchInput ? searchInput.value.trim() : "";
@@ -349,78 +349,87 @@ async function searchInterviews() {
   if (!resultsDiv) return;
   resultsDiv.innerHTML = "<p style='color:#888;'>검색 중...</p>";
 
-  let supabaseQuery = _supabase
-    .from('interviews')
-    .select('*, comments(*)')
-    .order('created_at', { ascending: false });
+  try {
+    let supabaseQuery = _supabase
+      .from('interviews')
+      .select('*, comments(*)')
+      .order('created_at', { ascending: false });
 
-  if (query !== "") {
-    supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`);
-  }
+    if (query !== "") {
+      supabaseQuery = supabaseQuery.or(`title.ilike.%${query}%,content.ilike.%${query}%`);
+    }
 
-  let { data: interviews, error } = await supabaseQuery;
+    let { data: interviews, error } = await supabaseQuery;
 
-  if (error || !interviews || interviews.length === 0) {
-    resultsDiv.innerHTML = "<p style='color:#888;'>등록된 글이 없습니다.</p>";
-    return;
-  }
+    if (error) {
+      console.error("Supabase Error:", error);
+      resultsDiv.innerHTML = `<p style='color:red;'>데이터 로딩 실패: ${error.message}</p>`;
+      return;
+    }
 
-  const likedList = JSON.parse(localStorage.getItem('liked_interviews') || '[]');
+    if (!interviews || interviews.length === 0) {
+      resultsDiv.innerHTML = "<p style='color:#888;'>등록된 글이 없습니다.</p>";
+      return;
+    }
 
-  resultsDiv.innerHTML = interviews.map((item, index) => {
-  const commentList = item.comments || [];
-    commentList.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
-    const isLiked = likedList.includes(item.id);
+    const likedList = JSON.parse(localStorage.getItem('liked_interviews') || '[]');
 
-    const commentsHtml = commentList.length > 0 
-      ? commentList.map(c => `
-          <div class="comment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e5e5e5;">
-            <span style="font-size: 0.9em; color: #111;">${c.content}</span>
-            <div style="display: flex; align-items: center; gap: 8px;">
-              <span style="font-size: 0.75em; color: #888;">${formatDate(c.created_at)}</span>
-              ${isAdmin ? `<button onclick="deleteComment(${c.id}, ${item.id})" style="padding: 2px 6px; background: #ff4d4f; color: #fff; border: none; font-size: 0.7em; cursor: pointer;">삭제</button>` : ''}
+    resultsDiv.innerHTML = interviews.map((item) => {
+      const commentList = item.comments || [];
+      commentList.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
+      const isLiked = likedList.includes(item.id);
+
+      const commentsHtml = commentList.length > 0 
+        ? commentList.map(c => `
+            <div class="comment-item">
+              <span class="comment-content">${c.content}</span>
+              <div class="comment-meta">
+                <span class="comment-date">${formatDate(c.created_at)}</span>
+                ${isAdmin ? `<button class="btn-del-sm" onclick="deleteComment(${c.id}, ${item.id})">삭제</button>` : ''}
+              </div>
             </div>
-          </div>
-        `).join('')
-      : '<p style="color:#888; font-size:0.9em; padding: 12px 0;">첫 댓글을 남겨보세요.</p>';
+          `).join('')
+        : '<p class="empty-comment">첫 댓글을 남겨보세요.</p>';
 
-    return `
-      <details class="card" style="border: none; border-bottom: 1px solid #e1e1e1; padding: 16px 0; margin-bottom: 0;">
-        <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; list-style: none; outline: none;">
-          <strong style="font-size: 1.05em; color: #111;">${item.title || '제목 없음'}</strong>
-          <span class="card-date" style="color: #888; font-size: 0.82em;">${formatDate(item.created_at)}</span>
-        </summary>
-        
-        <div class="card-body" style="padding-top: 16px; margin-top: 12px; border-top: 1px dashed #eee;">
-          <p class="card-content" style="font-size: 0.95em; color: #222; margin-bottom: 20px; line-height: 1.6; white-space: pre-line;">${item.content || ''}</p>
+      return `
+        <details class="card">
+          <summary class="card-header">
+            <strong class="card-title">${item.title || '제목 없음'}</strong>
+            <span class="card-date">${formatDate(item.created_at)}</span>
+          </summary>
+          
+          <div class="card-body">
+            <p class="card-content">${item.content || ''}</p>
 
-          <!-- 버튼 영역 (좋아요, 댓글보기, 관리자 삭제) -->
-          <div style="display: flex; gap: 8px; margin-bottom: 16px; align-items: center;">
-            <button onclick="likeInterview(${item.id}, this)" style="background: #fff; border: 1px solid #111; padding: 6px 12px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.82em; font-weight: bold; color: #111;">
-              <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span> 
-              <span class="like-count">${item.likes || 0}</span>
-            </button>
-            <button id="comment-btn-${item.id}" onclick="toggleComments(${item.id})" style="background: #fff; border: 1px solid #111; padding: 6px 12px; cursor: pointer; color: #111; font-size: 0.82em; font-weight: bold;">
-              💬 댓글 보기
-            </button>
-            ${isAdmin ? `<button onclick="deleteInterview(${item.id})" style="background: #ff4d4f; color: #fff; border: 1px solid #ff4d4f; padding: 6px 12px; cursor: pointer; font-size: 0.82em; font-weight: bold;">🗑️ 게시물 삭제</button>` : ''}
-          </div>
+            <!-- 액션 버튼 영역 -->
+            <div class="card-actions">
+              <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="likeInterview(${item.id}, this)">
+                <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span> 
+                <span class="like-count">${item.likes || 0}</span>
+              </button>
+              <button id="comment-btn-${item.id}" class="action-btn" onclick="toggleComments(${item.id})">
+                💬 댓글 ${commentList.length}
+              </button>
+              ${isAdmin ? `<button class="action-btn danger" onclick="deleteInterview(${item.id})">🗑️ 삭제</button>` : ''}
+            </div>
 
-          <!-- 댓글 박스 -->
-          <div id="comments-box-${item.id}" class="comments-section" style="display: none; background: #fafafa; padding: 16px; border: 1px solid #111;">
-            <strong class="comment-count-text" style="font-size: 0.88em; color: #111; display: block; margin-bottom: 8px;">댓글 (${commentList.length})</strong>
-            <div class="comments-list">${commentsHtml}</div>
-            <div style="margin-top: 12px;">
-              <div class="comment-input-box" style="display: flex;">
-                <input type="text" id="comment-input-${item.id}" placeholder="댓글을 입력하세요..." style="flex: 1; padding: 8px 10px; border: 1px solid #111; border-right: none; font-size: 0.82em; outline: none; background: #fff;">
-                <button onclick="addComment(${item.id})" style="padding: 8px 16px; background: #111; color: #fff; border: 1px solid #111; font-size: 0.82em; font-weight: bold; cursor: pointer;">작성</button>
+            <!-- 댓글 섹션 (테두리 네모상자 제거) -->
+            <div id="comments-box-${item.id}" class="comments-section" style="display: none;">
+              <div class="comments-list">${commentsHtml}</div>
+              <div class="comment-input-box">
+                <input type="text" id="comment-input-${item.id}" placeholder="댓글을 입력하세요...">
+                <button class="btn-submit" onclick="addComment(${item.id})">작성</button>
               </div>
             </div>
           </div>
-        </div>
-      </details>
-    `;
-  }).join('');
+        </details>
+      `;
+    }).join('');
+
+  } catch (err) {
+    console.error("Catch Error:", err);
+    resultsDiv.innerHTML = `<p style='color:red;'>오류 발생: ${err.message}</p>`;
+  }
 }
 
 // DOM 로드 완료 후 초기화

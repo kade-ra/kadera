@@ -374,26 +374,40 @@ async function searchInterviews() {
         `).join('')
       : '<p style="color:#888; font-size:0.9em; padding: 12px 0;">첫 댓글을 남겨보세요.</p>';
 
+    // 인터뷰 번호 자동 생성 (DB에 interview_num이 있으면 사용, 없으면 순번으로 #001 형태)
+    const totalCount = interviews.length;
+    const numStr = String(totalCount - index).padStart(3, '0');
+    const interviewNum = item.interview_num || `KADERA INTERVIEW #${numStr}`;
+    const summaryText = item.summary || '한 줄 소개가 아직 등록되지 않았습니다.';
+
     return `
       <details class="card" style="border: none; border-bottom: 2px solid #111; padding-bottom: 16px; margin-bottom: 20px;">
-        <summary style="display: flex; justify-content: space-between; align-items: center; cursor: pointer; font-weight: bold; font-size: 1em; padding: 8px 0;">
-  <span>${item.title || '제목 없음'}</span>
-  <span class="card-date" style="font-weight: normal; color: #666; font-size: 0.85em;">${formatDate(item.created_at)}</span>
-</summary>
+        <summary style="display: flex; flex-direction: column; align-items: flex-start; cursor: pointer; padding: 8px 0;">
+          <span style="font-size: 0.75em; font-weight: bold; color: #888; letter-spacing: 1px; margin-bottom: 4px;">${interviewNum}</span>
+          <div style="display: flex; justify-content: space-between; width: 100%; align-items: center;">
+            <span style="font-weight: bold; font-size: 1.1em; color: #111;">${item.title || '제목 없음'}</span>
+            <span class="card-date" style="font-weight: normal; color: #666; font-size: 0.85em;">${formatDate(item.created_at)}</span>
+          </div>
+          <p style="font-size: 0.88em; color: #555; margin: 6px 0 0 0; font-weight: normal;">${summaryText}</p>
+        </summary>
         
         <div class="card-body" style="padding-top: 12px;">
           <p class="card-content" style="font-size: 0.95em; color: #222; margin-bottom: 20px; line-height: 1.6;">${item.content || ''}</p>
 
-          <!-- 좋아요 및 댓글 보기 (각진 블랙&화이트 버튼) -->
-          <div style="display: flex; gap: 8px; margin-bottom: 16px;">
-            <button onclick="likeInterview(${item.id}, this)" style="background: #fff; border: 1px solid #111; padding: 8px 16px; border-radius: 0px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85em; font-weight: bold; color: #111;">
-              <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span> 
-              <span class="like-count">${item.likes || 0}</span>
-            </button>
-            <button id="comment-btn-${item.id}" onclick="toggleComments(${item.id})" style="background: #fff; border: 1px solid #111; padding: 8px 16px; border-radius: 0px; cursor: pointer; color: #111; font-size: 0.85em; font-weight: bold;">
-              💬 댓글 보기
-            </button>
-          </div>
+          <!-- 버튼 영역 (좋아요, 댓글보기, 공유하기) -->
+<div style="display: flex; gap: 8px; margin-bottom: 16px;">
+  <button onclick="likeInterview(${item.id}, this)" style="background: #fff; border: 1px solid #111; padding: 8px 16px; cursor: pointer; display: flex; align-items: center; gap: 6px; font-size: 0.85em; font-weight: bold; color: #111;">
+    <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span> 
+    <span class="like-count">${item.likes || 0}</span>
+  </button>
+  <button id="comment-btn-${item.id}" onclick="toggleComments(${item.id})" style="background: #fff; border: 1px solid #111; padding: 8px 16px; cursor: pointer; color: #111; font-size: 0.85em; font-weight: bold;">
+    💬 댓글 보기
+  </button>
+  <!-- [추가] 공유하기 버튼 -->
+  <button onclick="copyLink()" style="background: #fff; border: 1px solid #111; padding: 8px 16px; cursor: pointer; color: #111; font-size: 0.85em; font-weight: bold;">
+    🔗 공유하기
+  </button>
+</div>
 
           <!-- 댓글 영역 (검은색 테두리 & 완전 직각 디자인) -->
           <div id="comments-box-${item.id}" class="comments-section" style="display: none; background: #fff; padding: 16px; border-radius: 0px; border: 1px solid #111;">
@@ -457,37 +471,40 @@ document.addEventListener("DOMContentLoaded", () => {
       }
     });
   }
+const submitBtn = document.getElementById("submitBtn");
+if (submitBtn) {
+  submitBtn.addEventListener("click", async () => {
+    const titleInput = document.getElementById("writeTitle");
+    const summaryInput = document.getElementById("writeSummary"); // [추가]
+    const contentInput = document.getElementById("writeContent");
 
-  const submitBtn = document.getElementById("submitBtn");
-  if (submitBtn) {
-    submitBtn.addEventListener("click", async () => {
-      const titleInput = document.getElementById("writeTitle");
-      const contentInput = document.getElementById("writeContent");
+    const title = titleInput.value.trim();
+    const summary = summaryInput ? summaryInput.value.trim() : ""; // [추가]
+    const content = contentInput.value.trim();
 
-      const title = titleInput.value.trim();
-      const content = contentInput.value.trim();
+    if (!title || !content) {
+      alert("제목과 내용을 모두 입력해 주세요.");
+      return;
+    }
 
-      if (!title || !content) {
-        alert("제목과 내용을 모두 입력해 주세요.");
-        return;
-      }
+    // DB에 summary 함께 전달
+    const { error } = await _supabase
+      .from('interviews')
+      .insert([{ title: title, summary: summary, content: content }]); // [수정]
 
-      const { error } = await _supabase
-        .from('interviews')
-        .insert([{ title: title, content: content }]);
-
-      if (error) {
-        console.error("등록 오류:", error);
-        alert("글 등록 실패: " + error.message);
-      } else {
-        alert("성공적으로 등록되었습니다!");
-        titleInput.value = "";
-        contentInput.value = "";
-        if (modal) modal.style.display = "none";
-        searchInterviews();
-      }
-    });
-  }
+    if (error) {
+      console.error("등록 오류:", error);
+      alert("글 등록 실패: " + error.message);
+    } else {
+      alert("성공적으로 등록되었습니다!");
+      titleInput.value = "";
+      if (summaryInput) summaryInput.value = ""; // [추가]
+      contentInput.value = "";
+      if (modal) modal.style.display = "none";
+      searchInterviews();
+    }
+  });
+}
 
   const searchBtn = document.getElementById("searchBtn");
   if (searchBtn) {
@@ -496,3 +513,14 @@ document.addEventListener("DOMContentLoaded", () => {
 
   searchInterviews();
 });
+
+// 공유하기 (링크 복사) 함수
+function copyLink() {
+  navigator.clipboard.writeText(window.location.href)
+    .then(() => {
+      alert("링크가 복사되었습니다! 원하는 곳에 붙여넣어 공유해 보세요. 🎉");
+    })
+    .catch(err => {
+      console.error("복사 실패:", err);
+    });
+}

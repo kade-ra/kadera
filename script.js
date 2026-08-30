@@ -367,8 +367,8 @@ async function searchInterviews() {
 
   const likedList = JSON.parse(localStorage.getItem('liked_interviews') || '[]');
 
-  resultsDiv.innerHTML = interviews.map((item) => {
-    const commentList = item.comments || [];
+  resultsDiv.innerHTML = interviews.map((item, index) => {
+  const commentList = item.comments || [];
     commentList.sort((a, b) => new Date(a.created_at) - new Date(b.created_at));
     const isLiked = likedList.includes(item.id);
 

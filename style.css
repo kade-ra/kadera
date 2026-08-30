@@ -762,11 +762,12 @@ textarea {
 }
 
 .comment-item {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 8px 0;
-  border-bottom: 1px solid #f0f0f0;
+  display: flex !important;
+  justify-content: flex-start !important; /* 양끝 정렬 해제 및 왼쪽 정렬 */
+  align-items: center !important;
+  gap: 12px !important; /* 댓글과 날짜 사이 간격 설정 */
+  padding: 8px 0 !important;
+  border-bottom: 1px solid #f0f0f0 !important;
 }
 
 .comment-item:last-child {
@@ -787,6 +788,7 @@ textarea {
 .comment-date {
   font-size: 0.75rem !important;
   color: #999 !important;
+  margin-left: auto; /* 날짜만 오른쪽 끝으로 보내고 싶다면 이 줄을 유지, 댓글 바로 옆에 두려면 이 줄을 삭제하세요 */
 }
 
 .empty-comment {

@@ -340,7 +340,7 @@ async function deleteInterview(id) {
   }
 }
 
-// 게시글 및 댓글 조회 (디자인 및 스크립트 최적화)
+// 게시글 및 댓글 조회 (이미지 스타일 맞춤)
 async function searchInterviews() {
   const searchInput = document.getElementById("searchInput");
   const query = searchInput ? searchInput.value.trim() : "";
@@ -401,11 +401,10 @@ async function searchInterviews() {
           <div class="card-body">
             <p class="card-content">${item.content || ''}</p>
 
-            <!-- 액션 버튼 영역 -->
             <div class="card-actions">
-              <button class="action-btn ${isLiked ? 'liked' : ''}" onclick="likeInterview(${item.id}, this)">
-                <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span> 
-                <span class="like-count">${item.likes || 0}</span>
+              <button class="action-btn" onclick="likeInterview(${item.id}, this)">
+                <span>${isLiked ? '❤️' : '🤍'}</span> 
+                <span>${item.likes || 0}</span>
               </button>
               <button id="comment-btn-${item.id}" class="action-btn" onclick="toggleComments(${item.id})">
                 💬 댓글 ${commentList.length}
@@ -413,8 +412,8 @@ async function searchInterviews() {
               ${isAdmin ? `<button class="action-btn danger" onclick="deleteInterview(${item.id})">🗑️ 삭제</button>` : ''}
             </div>
 
-            <!-- 댓글 섹션 (테두리 네모상자 제거) -->
             <div id="comments-box-${item.id}" class="comments-section" style="display: none;">
+              <strong class="comment-count-title">댓글 (${commentList.length})</strong>
               <div class="comments-list">${commentsHtml}</div>
               <div class="comment-input-box">
                 <input type="text" id="comment-input-${item.id}" placeholder="댓글을 입력하세요...">

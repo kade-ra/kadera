@@ -490,3 +490,175 @@ textarea {
   font-size: 0.75rem;
   cursor: pointer;
 }
+
+/* 미니멀 흑백 선명한 디자인 (Monochrome Border Style) */
+.card {
+  border: none;
+  border-bottom: 2px solid #000;
+  padding: 20px 0;
+  margin-bottom: 0;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  list-style: none;
+}
+
+.card-header::-webkit-details-marker {
+  display: none;
+}
+
+.card-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  color: #000;
+}
+
+.card-date {
+  font-size: 0.85rem;
+  color: #666;
+  font-weight: 500;
+}
+
+.card-body {
+  padding-top: 16px;
+  margin-top: 12px;
+  border-top: 1px dashed #ccc;
+}
+
+.card-content {
+  font-size: 0.95rem;
+  line-height: 1.6;
+  color: #111;
+  white-space: pre-line;
+  margin-bottom: 20px;
+}
+
+/* 액션 버튼 (선명한 테두리) */
+.card-actions {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.action-btn {
+  background: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  font-weight: 700;
+  color: #000;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: all 0.1s ease;
+}
+
+.action-btn:hover {
+  background: #000;
+  color: #fff;
+}
+
+.action-btn.danger {
+  border-color: #000;
+  color: #ff4d4f;
+}
+
+.action-btn.danger:hover {
+  background: #ff4d4f;
+  color: #fff;
+}
+
+/* 댓글 박스 (이미지 스타일 적용) */
+.comments-section {
+  margin-top: 16px;
+  padding: 20px;
+  border: 2px solid #000;
+  background: #fff;
+}
+
+.comment-count-title {
+  font-size: 0.95rem;
+  font-weight: 800;
+  color: #000;
+  margin-bottom: 12px;
+  display: block;
+}
+
+.comment-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px solid #eee;
+}
+
+.comment-item:last-child {
+  border-bottom: none;
+}
+
+.comment-content {
+  font-size: 0.9rem;
+  color: #111;
+  font-weight: 500;
+}
+
+.comment-meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.comment-date {
+  font-size: 0.75rem;
+  color: #888;
+}
+
+.empty-comment {
+  font-size: 0.88rem;
+  color: #888;
+  padding: 10px 0;
+}
+
+/* 댓글 입력 박스 (이미지의 Input & Button과 동일한 형태) */
+.comment-input-box {
+  display: flex;
+  margin-top: 16px;
+  gap: 0;
+}
+
+.comment-input-box input {
+  flex: 1;
+  padding: 12px 14px;
+  border: 2px solid #000;
+  border-right: none;
+  border-radius: 0;
+  font-size: 0.9rem;
+  outline: none;
+  color: #000;
+}
+
+.comment-input-box input::placeholder {
+  color: #aaa;
+}
+
+.comment-input-box .btn-submit {
+  padding: 12px 24px;
+  background: #000;
+  color: #fff;
+  border: 2px solid #000;
+  border-radius: 0;
+  font-size: 0.9rem;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.comment-input-box .btn-submit:hover {
+  background: #333;
+}

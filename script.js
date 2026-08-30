@@ -38,7 +38,6 @@ function switchTab(category) {
 // 브랜드 소개 렌더링 (포인트가 들어간 모던 블랙 디자인)
 function renderBrandIntro() {
   document.getElementById("results").innerHTML = `
-    <div class="brand-intro" style="font-family: inherit;">
       <!-- 상단 히어로 박스 (블랙 배경 + 흰색 텍스트 포인트) -->
       <div style="text-align: center; padding: 48px 24px; background: #111; color: #fff; border: 1px solid #111; border-radius: 0px; margin-bottom: 24px;">
         <span style="font-size: 0.8em; letter-spacing: 2px; text-transform: uppercase; color: #888; font-weight: bold; display: block; margin-bottom: 12px;">ABOUT US</span>

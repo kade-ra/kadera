@@ -84,7 +84,7 @@ async function renderRequestTab() {
   resultsDiv.innerHTML = `
     <div class="request-container" style="border: 1px solid #111; padding: 24px; background: #fff; border-radius: 0px;">
       <p class="request-banner" style="font-weight: bold; color: #111; text-align: center; margin-bottom: 8px; font-size: 1em;">
-        여러분의 작은 의견 하나가 다음 인터뷰의 아이디어가 됩니다.
+        여러분의 소중한 의견 하나가 다음 인터뷰의 아이디어가 됩니다.
       </p>
       
       <p style="font-size: 0.8em; color: #777; margin-bottom: 20px; text-align: center;">

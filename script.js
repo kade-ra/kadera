@@ -202,39 +202,51 @@ async function submitRequest() {
   }
 }
 
-// 좋아요 토글 기능
+// 즉시 반응하는 실시간 좋아요 토글 함수 (Optimistic UI 적용)
 async function likeInterview(id, btnElement) {
   let likedList = JSON.parse(localStorage.getItem('liked_interviews') || '[]');
   const isLiked = likedList.includes(id);
 
   const countSpan = btnElement.querySelector('.like-count');
   const iconSpan = btnElement.querySelector('.like-icon');
-  
-  let currentCount = parseInt(countSpan ? countSpan.innerText : "0", 10) || 0;
-  let newLikes = isLiked ? currentCount - 1 : currentCount + 1;
-  if (newLikes < 0) newLikes = 0;
 
+  let currentCount = parseInt(countSpan ? countSpan.innerText : "0", 10) || 0;
+  let newLikes = isLiked ? Math.max(0, currentCount - 1) : currentCount + 1;
+
+  // 1. [실시간 UI 즉시 반영] DB 응답 대기 전에 UI를 먼저 전환
+  if (countSpan) countSpan.innerText = newLikes;
+  if (iconSpan) iconSpan.innerText = isLiked ? "🤍" : "❤️";
+
+  // 로컬 스토리지 선반영
+  if (isLiked) {
+    likedList = likedList.filter(item => item !== id);
+  } else {
+    likedList.push(id);
+  }
+  localStorage.setItem('liked_interviews', JSON.stringify(likedList));
+
+  // 2. 백그라운드에서 Supabase DB 비동기 업데이트
   const { error } = await _supabase
     .from('interviews')
     .update({ likes: newLikes })
     .eq('id', id);
 
+  // 3. 만약 서버 반영 실패 시 롤백
   if (error) {
     console.error("좋아요 처리 오류:", error);
     alert("좋아요 반영 실패: " + error.message);
-    return;
-  }
 
-  if (isLiked) {
-    likedList = likedList.filter(item => item !== id);
-    if (iconSpan) iconSpan.innerText = "🤍";
-  } else {
-    likedList.push(id);
-    if (iconSpan) iconSpan.innerText = "❤️";
-  }
+    // 원상 복구
+    if (countSpan) countSpan.innerText = currentCount;
+    if (iconSpan) iconSpan.innerText = isLiked ? "❤️" : "🤍";
 
-  localStorage.setItem('liked_interviews', JSON.stringify(likedList));
-  if (countSpan) countSpan.innerText = newLikes;
+    if (isLiked) {
+      likedList.push(id);
+    } else {
+      likedList = likedList.filter(item => item !== id);
+    }
+    localStorage.setItem('liked_interviews', JSON.stringify(likedList));
+  }
 }
 
 // 댓글 영역 토글
@@ -302,20 +314,20 @@ async function refreshComments(interviewId) {
   const commentsBox = document.getElementById(`comments-box-${interviewId}`);
   if (!commentsBox) return;
 
-  const countHeader = commentsBox.querySelector('.comment-count-text');
+  const countHeader = commentsBox.querySelector('.comment-count-title');
   if (countHeader) countHeader.innerText = `댓글 (${comments.length})`;
 
   const commentsListDiv = commentsBox.querySelector('.comments-list');
   if (commentsListDiv) {
     if (comments.length === 0) {
-      commentsListDiv.innerHTML = '<p style="color:#888; font-size:0.9em; padding: 12px 0;">첫 댓글을 남겨보세요.</p>';
+      commentsListDiv.innerHTML = '<p class="empty-comment">첫 댓글을 남겨보세요.</p>';
     } else {
       commentsListDiv.innerHTML = comments.map(c => `
-        <div class="comment-item" style="display: flex; justify-content: space-between; align-items: center; padding: 10px 0; border-bottom: 1px solid #e5e5e5;">
-          <span style="font-size: 0.9em; color: #111;">${c.content}</span>
-          <div style="display: flex; align-items: center; gap: 8px;">
-            <span style="font-size: 0.75em; color: #888;">${formatDate(c.created_at)}</span>
-            ${isAdmin ? `<button onclick="deleteComment(${c.id}, ${interviewId})" style="padding: 2px 6px; background: #ff4d4f; color: #fff; border: none; font-size: 0.7em; cursor: pointer;">삭제</button>` : ''}
+        <div class="comment-item">
+          <span class="comment-content">${c.content}</span>
+          <div class="comment-meta">
+            <span class="comment-date">${formatDate(c.created_at)}</span>
+            ${isAdmin ? `<button class="btn-del-sm" onclick="deleteComment(${c.id}, ${interviewId})">삭제</button>` : ''}
           </div>
         </div>
       `).join('');
@@ -340,7 +352,7 @@ async function deleteInterview(id) {
   }
 }
 
-// 게시글 및 댓글 조회 (이미지 스타일 맞춤)
+// 게시글 및 댓글 조회 (실시간 바인딩 클래스 맞춰 구성)
 async function searchInterviews() {
   const searchInput = document.getElementById("searchInput");
   const query = searchInput ? searchInput.value.trim() : "";
@@ -392,7 +404,7 @@ async function searchInterviews() {
         : '<p class="empty-comment">첫 댓글을 남겨보세요.</p>';
 
       return `
-        <details class="card">
+        <details class="card" id="interview-card-${item.id}">
           <summary class="card-header">
             <span class="card-title">${item.title || '제목 없음'}</span>
             <span class="card-date">${formatDate(item.created_at)}</span>
@@ -403,16 +415,16 @@ async function searchInterviews() {
 
             <div class="card-actions">
               <button class="action-btn" onclick="likeInterview(${item.id}, this)">
-                <span>${isLiked ? '❤️' : '🤍'}</span> 
-                <span>${item.likes || 0}</span>
+                <span class="like-icon">${isLiked ? '❤️' : '🤍'}</span> 
+                <span class="like-count">${item.likes || 0}</span>
               </button>
               <button id="comment-btn-${item.id}" class="action-btn" onclick="toggleComments(${item.id})">
-                💬 댓글 접기
+                💬 댓글 보기
               </button>
               ${isAdmin ? `<button class="action-btn danger" onclick="deleteInterview(${item.id})">삭제</button>` : ''}
             </div>
 
-            <div id="comments-box-${item.id}" class="comments-section">
+            <div id="comments-box-${item.id}" class="comments-section" style="display: none;">
               <span class="comment-count-title">댓글 (${commentList.length})</span>
               <div class="comments-list">${commentsHtml}</div>
               <div class="comment-input-box">
@@ -431,6 +443,24 @@ async function searchInterviews() {
   }
 }
 
+// Supabase Realtime 구독 설정 함수
+function setupRealtimeSubscription() {
+  if (!_supabase) return;
+
+  _supabase
+    .channel('public:interviews')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'interviews' }, payload => {
+      const updatedItem = payload.new;
+      const card = document.getElementById(`interview-card-${updatedItem.id}`);
+      if (card) {
+        const countSpan = card.querySelector('.like-count');
+        if (countSpan) {
+          countSpan.innerText = updatedItem.likes || 0;
+        }
+      }
+    })
+    .subscribe();
+}
 
 // DOM 로드 완료 후 초기화
 document.addEventListener("DOMContentLoaded", () => {
@@ -438,6 +468,9 @@ document.addEventListener("DOMContentLoaded", () => {
   const SUPABASE_KEY = "sb_publishable_1hWtLSvopPq8Y-ac7LobNw_k-rSAd8G";
   
   _supabase = supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+
+  // 실시간 구독 활성화
+  setupRealtimeSubscription();
 
   const modal = document.getElementById("modalOverlay");
   const openBtn = document.getElementById("openModalBtn");
